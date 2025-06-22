@@ -57,10 +57,12 @@ class HomeDrawer extends StatelessWidget {
                       ),
                       const Spacer(),
                       const Text.rich(TextSpan(children: [
-                        TextSpan(text: 'Developed by '),
+                        TextSpan(text: 'Created by '),
                         TextSpan(
-                            text: 'Amine Khadir',
-                            style: TextStyle(fontWeight: FontWeight.w700))
+                            text: 'AmineDEVWEBAPP',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontStyle: FontStyle.italic))
                       ])),
                     ]),
                   )),
