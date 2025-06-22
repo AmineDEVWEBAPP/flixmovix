@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "958489662830",
+    "project_id": "flixmovix",
+    "storage_bucket": "flixmovix.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:958489662830:android:c41645c39bdc9cc86add7f",
+        "android_client_info": {
+          "package_name": "flix.movix.viewMedia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY52hsAuaurV9GYe2yuKWZn12TFy4Id88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
