@@ -50,20 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAY52hsAuaurV9GYe2yuKWZn12TFy4Id88',
-    appId: '1:958489662830:android:c41645c39bdc9cc86add7f',
-    messagingSenderId: '958489662830',
-    projectId: 'flixmovix',
-    storageBucket: 'flixmovix.firebasestorage.app',
+    apiKey: 'AIzaSyAWZUD0eRDfUzbvXaFX2wCAnbLOSQ60zQ8',
+    appId: '1:948714462413:android:60532ac39132cae9235d84',
+    messagingSenderId: '948714462413',
+    projectId: 'flixmovix-4057f',
+    storageBucket: 'flixmovix-4057f.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDojyi_fcw7yyLW_OGfc36B8_YRrgMerS0',
-    appId: '1:958489662830:ios:8b590da6acc8ef4d6add7f',
-    messagingSenderId: '958489662830',
-    projectId: 'flixmovix',
-    storageBucket: 'flixmovix.firebasestorage.app',
+    apiKey: 'AIzaSyAHTG5a7ZiFl6F-axo66JgYXHgFiM5J4_g',
+    appId: '1:948714462413:ios:3c6dd3a1800b4bfb235d84',
+    messagingSenderId: '948714462413',
+    projectId: 'flixmovix-4057f',
+    storageBucket: 'flixmovix-4057f.firebasestorage.app',
     iosBundleId: 'flix.movix.viewMedia',
   );
-
 }

@@ -19,6 +19,6 @@ Future initServices() async {
 
 Future<bool> checkConnectionStatus() async {
   InternetConnectionStatus connectionStatus =
-      await InternetConnectionChecker().connectionStatus;
+      await InternetConnectionChecker.instance.connectionStatus;
   return connectionStatus == InternetConnectionStatus.connected ? true : false;
 }

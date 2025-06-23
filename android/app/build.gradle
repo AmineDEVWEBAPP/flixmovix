@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "flix.movix.viewMedia"
+    namespace = "com.example.flixmovix"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
