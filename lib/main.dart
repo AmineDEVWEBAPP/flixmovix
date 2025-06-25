@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 
 import 'core/bindings/details_bindings.dart';
@@ -10,7 +11,9 @@ import 'view/screen/details/details.dart';
 import 'view/screen/home.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await initServices();
+  FlutterNativeSplash.remove();
   runApp(const MyApp());
 }
 

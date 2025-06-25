@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../service/storage_service.dart';
 import '../utils/methodes.dart';
+import 'enums.dart';
 
 class AppTheme {
   static final AppTheme _instance = AppTheme();
@@ -18,9 +19,11 @@ class AppTheme {
 
   Future<ThemeMode> _getThemeMode() async {
     logger('get Theme mode');
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     late String themeMode;
-    themeMode = sharedPreferences.getString('themeMode') ?? 'system';
+    Map dt = await StorageService.read(DbColumns.themeMode);
+    themeMode = dt.isEmpty || dt[DbColumns.themeMode.name] == null
+        ? 'system'
+        : dt[DbColumns.themeMode.name];
     switch (themeMode) {
       case 'light':
         return ThemeMode.light;
@@ -54,8 +57,7 @@ class AppTheme {
     _instance.theme = _getTheme();
     Get.changeTheme(_instance.theme);
     getxController?.update();
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.setString('themeMode', _instance.themeMode.name);
+    await StorageService.write(DbColumns.themeMode, _instance.themeMode.name);
     Get.appUpdate();
   }
 

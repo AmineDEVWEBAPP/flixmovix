@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../firebase_options.dart';
+import '../config/enums.dart';
 import '../utils/methodes.dart';
+import 'storage_service.dart';
 
 class FirebaseService {
   FirebaseService._();
@@ -37,9 +38,10 @@ class FirebaseService {
   }
 
   Future<int> setDownloadsCount() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    bool isAdded = sharedPreferences.getBool('downloadCountIsAdded') ?? false;
-    if (isAdded) {
+    Map dt = await StorageService.read(DbColumns.isFirstOpen);
+    bool isFirstOpen =
+        dt.isEmpty ? true : bool.parse(dt[DbColumns.isFirstOpen.name]);
+    if (!isFirstOpen) {
       return 0;
     }
     DocumentReference downloads =
@@ -54,7 +56,7 @@ class FirebaseService {
 
             transaction.update(downloads, {'count': newDownloadCount});
             logger('set Download Count seccuess');
-            sharedPreferences.setBool('downloadCountIsAdded', true);
+            await StorageService.write(DbColumns.isFirstOpen, false);
             // Return the new count
             return newDownloadCount;
           }
