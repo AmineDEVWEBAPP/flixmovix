@@ -27,7 +27,9 @@ class HomeSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
         id: 'homeSearchBar',
-        builder: (controller) => Row(
+        builder: (controller) => SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 AnimatedContainer(
@@ -39,7 +41,7 @@ class HomeSearchBar extends StatelessWidget {
                       : _buildTextField(controller),
                 ),
               ],
-            ));
+            )));
   }
 
   Widget _buildTextField(HomeController controller) => TextField(
@@ -166,6 +168,7 @@ class HomeSearchBar extends StatelessWidget {
                   ]);
             },
             child: Container(
+              width: Get.width * 0.2,
               padding: const EdgeInsets.all(3),
               decoration: BoxDecoration(
                   color: color ?? _appTheme.theme.colorScheme.secondary,
@@ -176,10 +179,13 @@ class HomeSearchBar extends StatelessWidget {
                             color: _appTheme.theme.shadowColor,
                             offset: const Offset(0, 1.5)),
                       ]),
-              child: const Row(children: [
-                Text('التصنيف ', style: TextStyle(fontSize: 19)),
-                Icon(Icons.keyboard_arrow_down)
-              ]),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: const Row(children: [
+                  Text('التصنيف ', style: TextStyle(fontSize: 15)),
+                  Icon(Icons.keyboard_arrow_down)
+                ]),
+              ),
             ),
           );
         }
