@@ -1,9 +1,9 @@
 flutter_native_splash:
 
-  color: "#42a5f5"
+  # color: "#42a5f5"
   #background_image: "assets/background.png"
 
-  image: assets/images/logo.png
+  # image: assets/images/splashScreen.png
 
   #branding: assets/dart.png
 
@@ -13,7 +13,7 @@ flutter_native_splash:
   #branding_dark: assets/dart_dark.png
 
   android_12:
-    image: assets/images/logo.png
+    # image: assets/images/splashScreen.png
 
     # Splash screen background color.
     #color: "#42a5f5"
@@ -44,14 +44,14 @@ flutter_native_splash:
   #color_dark_ios: "#042a49"
   #color_web: "#42a5f5"
   #color_dark_web: "#042a49"
-  image_android: assets/images/logo.png
-  image_dark_android: assets/images/logo.png
-  image_ios: assets/images/logo.png
-  image_dark_ios: assets/images/logo.png
+  # image_android: assets/images/splashScreen.png
+  # image_dark_android: assets/images/splashScreen.png
+  # image_ios: assets/images/splashScreen.png
+  # image_dark_ios: assets/images/splashScreen.png
   #image_web: assets/splash-web.gif
   #image_dark_web: assets/splash-invert-web.gif
-  #background_image_android: "assets/background-android.png"
-  #background_image_dark_android: "assets/dark-background-android.png"
+  background_image_android: "assets/images/splashScreen.png"
+  background_image_dark_android: "assets/images/splashScreen.png"
   #background_image_ios: "assets/background-ios.png"
   #background_image_dark_ios: "assets/dark-background-ios.png"
   #background_image_web: "assets/background-web.png"

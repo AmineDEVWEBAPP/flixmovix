@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
+import '../../firebase_options.dart';
 import '../config/app_config.dart';
 import '../config/theme.dart';
 import '../service/ads_service.dart';
@@ -13,7 +14,7 @@ logger(String? message) {
 }
 
 Future initServices() async {
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await StorageService.init();
   await AppConfig.init();
   await AppTheme.init();
