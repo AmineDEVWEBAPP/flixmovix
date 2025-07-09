@@ -6,7 +6,7 @@ import '../config/app_config.dart';
 import '../config/theme.dart';
 import '../service/ads_service.dart';
 import '../service/firebase_service.dart';
-import '../service/storage_service.dart';
+import '../service/sqflite_service.dart';
 
 logger(String? message) {
   // ignore: avoid_print
@@ -15,7 +15,7 @@ logger(String? message) {
 
 Future initServices() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await StorageService.init();
+  await SQFliteService.init();
   await AppConfig.init();
   await AppTheme.init();
   await FirebaseService.init();

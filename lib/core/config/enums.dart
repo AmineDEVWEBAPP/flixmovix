@@ -1,1 +1,0 @@
-enum DbColumns { themeMode, isFirstOpen }

@@ -49,8 +49,8 @@ class Home extends StatelessWidget {
   Widget _buildBody(HomeController controller) {
     if (controller.isLoading) {
       return Center(child: CustomCircularProgress());
-    } else if (controller.itemsData.isEmpty) {
-      return const SizedBox();
+    } else if (controller.itemsData['body']['items'].isEmpty) {
+      return const Center(child: Text('لا شئ لعرضه'));
     } else if (controller.itemsData['connectionStatus'] == false) {
       return NoWifiWidget(onTapRetry: () async {
         await controller.reTry();

@@ -13,9 +13,6 @@ import '../../../core/config/theme.dart';
 class HomeSearchBar extends StatelessWidget {
   HomeSearchBar({super.key});
 
-  final FocusNode _focusNode = FocusNode();
-  final TextEditingController _editingController = TextEditingController();
-
   final AppTheme _appTheme = AppTheme().instance;
 
   final String url = AppConfig().instance.baseUrl;
@@ -39,75 +36,22 @@ class HomeSearchBar extends StatelessWidget {
             )));
   }
 
-  Widget _buildTextField(HomeController controller, BuildContext context) =>
-      TextField(
-        controller: _editingController,
-        focusNode: _focusNode,
-        onChanged: (value) async {
-          // if (_debounce?.isActive ?? false) _debounce?.cancel();
-          // _debounce = Timer(const Duration(milliseconds: 500), () async {
-          //   controller.isLoading = true;
-          //   controller.update(['homeBody']);
-          //   controller.itemsData = await ScrappingService.getItems(word: value);
-          //   controller.isLoading = false;
-          //   controller.update(['homeBody', 'homeSearchBar']);
-          // });
-        },
-        onSubmitted: (value) {
-          ScrappingService().instance.isSearch = false;
-          _focusNode.unfocus();
-          _editingController.clear();
-        },
-        // onTapOutside: (event) {
-        //   ScrappingService().instance.isSearch = false;
-        //   _focusNode.unfocus();
-        //   _isIcon = true;
-        //   _editingController.clear();
-        //   controller.update(['homeSearchBar']);
-        // },
-        cursorColor: _appTheme.theme.primaryColor,
-        textAlign: TextAlign.center,
-        decoration: InputDecoration(
-          suffixIcon: SizedBox(
-            width: Get.width * 0.25,
-            child: _buildPopupMenu(controller,
-                secondary: const SizedBox(),
-                color: Colors.transparent,
-                boxShadow: []),
-          ),
-          focusedBorder: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: _appTheme.theme.colorScheme.outline),
-              borderRadius: BorderRadius.circular(2000)),
-          border: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: _appTheme.theme.colorScheme.outline),
-              borderRadius: BorderRadius.circular(2000)),
-          hintText: 'أدخل الإسم',
-          hintStyle: const TextStyle(color: Colors.black38),
-          fillColor: _appTheme.theme.iconButtonTheme.style?.backgroundColor
-              ?.resolve(RxSet()),
-          filled: true,
-        ),
-      );
-
   Widget _buildSearchIcon(HomeController controller, BuildContext context) {
     return Row(children: [
       _buildPopupMenu(controller),
+      Spacer(),
       Container(
           alignment: Alignment.centerLeft,
           width: Get.width * 0.36,
           child: Text(controller.title, style: const TextStyle(fontSize: 20))),
-      SizedBox(width: Get.width * 0.05),
+      SizedBox(width: Get.width * 0.01),
       IconButton(
         icon: const Icon(Icons.search),
         onPressed: () {
           Get.toNamed(AppRoutes.search);
           controller.update(['homeSearchBar']);
-          _focusNode.requestFocus();
           ScrappingService().instance.isSearch = true;
         },
-        iconSize: ((Get.width + Get.height) / 2) * 0.045,
       ),
     ]);
   }
@@ -138,6 +82,7 @@ class HomeSearchBar extends StatelessWidget {
                         controller.update(['homeBody', 'homeSearchBar']);
                         controller.pageNum = 1;
                         ScrappingService().instance.getByCollection = false;
+                        ScrappingService().instance.isSearch = false;
                         ScrappingService().instance.baseUrl =
                             AppConfig().instance.baseUrl;
                         controller.itemsData =

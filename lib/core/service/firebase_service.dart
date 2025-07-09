@@ -1,17 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../firebase_options.dart';
-import '../config/enums.dart';
 import '../utils/methodes.dart';
-import 'storage_service.dart';
 
 class FirebaseService {
   FirebaseService._();
   static final FirebaseService _instance = FirebaseService._();
 
+  late final SharedPreferences prefs;
+
   static Future init() async {
     logger('init Firebase');
+    _instance.prefs = await SharedPreferences.getInstance();
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
@@ -38,9 +40,9 @@ class FirebaseService {
   }
 
   Future<int> setDownloadsCount() async {
-    Map dt = await StorageService.read(DbColumns.isFirstOpen);
-    bool isFirstOpen =
-        dt.isEmpty ? true : bool.parse(dt[DbColumns.isFirstOpen.name]);
+    bool isFirstOpen = _instance.prefs.getBool('isFirstOpen') == null
+        ? true
+        : _instance.prefs.getBool('isFirstOpen')!;
     if (!isFirstOpen) {
       return 0;
     }
@@ -56,7 +58,7 @@ class FirebaseService {
 
             transaction.update(downloads, {'count': newDownloadCount});
             logger('set Download Count seccuess');
-            await StorageService.write(DbColumns.isFirstOpen, false);
+            await _instance.prefs.setBool('isFirstOpen', false);
             // Return the new count
             return newDownloadCount;
           }

@@ -7,7 +7,10 @@ import '../view/widgets/shared/spleach_screen.dart';
 
 class HomeController extends GetxController {
   int pageNum = 1;
-  Map<String, dynamic> itemsData = {};
+  Map<String, dynamic> itemsData = {
+    'connectionStatus': true,
+    'body': {'items': []}
+  };
   bool isLoading = false;
   String title = 'الكل';
   Map<String, dynamic>? drawerCategorysData;

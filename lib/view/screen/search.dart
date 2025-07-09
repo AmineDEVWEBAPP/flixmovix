@@ -3,7 +3,10 @@ import 'package:get/get.dart';
 
 import '../../controller/home_controller.dart';
 import '../../core/config/theme.dart';
+import '../../core/service/scrapping_service.dart';
+import '../../core/service/sqflite_service.dart';
 
+// ignore: must_be_immutable
 class SearchPage extends StatelessWidget {
   SearchPage({super.key});
 
@@ -12,6 +15,10 @@ class SearchPage extends StatelessWidget {
   final TextEditingController _editingController = TextEditingController();
 
   final FocusNode _focusNode = FocusNode();
+
+  final HomeController _homeController = Get.find();
+
+  List<Map<String, Object?>> suggestions = [];
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -26,7 +33,11 @@ class SearchPage extends StatelessWidget {
               },
               icon: const Icon(Icons.arrow_back)),
           _buildTextFieldSearch(),
-          IconButton(icon: Icon(Icons.search), onPressed: () {}),
+          IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () async {
+                await _submitting(_editingController.text);
+              }),
         ]),
         Divider(),
         Align(
@@ -38,8 +49,12 @@ class SearchPage extends StatelessWidget {
         ),
         Expanded(
             child: GetBuilder<HomeController>(
-          initState: (state) {
-            _focusNode.requestFocus();
+          id: 'suggestions',
+          initState: (state) async {
+            // _focusNode.requestFocus();
+            suggestions = await SQFliteService.read(
+                columns: [DbColumns.searchSuggestion]);
+            _homeController.update(['suggestions']);
           },
           dispose: (state) {
             _focusNode.dispose();
@@ -53,6 +68,9 @@ class SearchPage extends StatelessWidget {
         height: Get.height * 0.05,
         width: Get.width * 0.7,
         child: TextField(
+          onSubmitted: (value) async {
+            await _submitting(value);
+          },
           focusNode: _focusNode,
           controller: _editingController,
           textInputAction: TextInputAction.search,
@@ -72,7 +90,7 @@ class SearchPage extends StatelessWidget {
                     color: _appTheme.theme.colorScheme.outline.withAlpha(200)),
                 borderRadius: BorderRadius.circular(10)),
             labelText: 'بحث...',
-            labelStyle: const TextStyle(color: Colors.black38),
+            labelStyle: const TextStyle(color: Color.fromARGB(95, 80, 80, 80)),
             fillColor: _appTheme.theme.iconButtonTheme.style?.backgroundColor
                 ?.resolve(RxSet()),
             filled: true,
@@ -83,17 +101,21 @@ class SearchPage extends StatelessWidget {
   Widget _buildSuggestions() => SingleChildScrollView(
         child: Column(children: [
           ...List.generate(
-              100,
+              suggestions.length,
               (i) => Row(
                     children: [
                       InkWell(
-                        onTap: () {},
+                        onTap: () async {
+                          await _submitting(
+                              suggestions[i]['searchSuggestion'].toString());
+                        },
                         child: SizedBox(
                           width: Get.width * 0.8,
                           child: Row(
                             children: [
                               SizedBox(width: Get.width * 0.08),
-                              Text('فيلم الاكشن',
+                              Text(
+                                  suggestions[i]['searchSuggestion'].toString(),
                                   style: const TextStyle(fontSize: 18)),
                             ],
                           ),
@@ -101,7 +123,14 @@ class SearchPage extends StatelessWidget {
                       ),
                       Spacer(),
                       IconButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            await SQFliteService.delete(
+                                DbColumns.searchSuggestion,
+                                suggestions[i]['searchSuggestion'].toString());
+                            suggestions = await SQFliteService.read(
+                                columns: [DbColumns.searchSuggestion]);
+                            _homeController.update(['suggestions']);
+                          },
                           icon: Icon(Icons.close),
                           style: ButtonStyle(
                               shadowColor:
@@ -112,4 +141,17 @@ class SearchPage extends StatelessWidget {
                   ))
         ]),
       );
+
+  Future<void> _submitting(String value) async {
+    Get.back();
+    _homeController.isLoading = true;
+    _homeController.title = value;
+    _homeController.update(['homeBody', 'homeSearchBar']);
+    _homeController.itemsData = await ScrappingService.getItems(word: value);
+    _homeController.isLoading = false;
+    _homeController.update(['homeBody', 'homeSearchBar']);
+    value.isNotEmpty
+        ? await SQFliteService.write(value, DbColumns.searchSuggestion)
+        : null;
+  }
 }
