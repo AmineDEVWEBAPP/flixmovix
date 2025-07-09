@@ -9,6 +9,7 @@ import 'core/config/theme.dart';
 import 'core/utils/methodes.dart';
 import 'view/screen/details/details.dart';
 import 'view/screen/home.dart';
+import 'view/screen/search.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
             name: AppRoutes.details,
             page: () => Details(),
             binding: DetailsBindings()),
+        GetPage(name: AppRoutes.search, page: () => SearchPage()),
       ],
     );
   }

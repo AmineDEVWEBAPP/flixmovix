@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 
 import '../../../controller/home_controller.dart';
 import '../../../core/config/app_config.dart';
+import '../../../core/config/routes.dart';
 import '../../../core/config/theme.dart';
 
 // ignore: must_be_immutable
@@ -17,11 +18,7 @@ class HomeSearchBar extends StatelessWidget {
 
   final AppTheme _appTheme = AppTheme().instance;
 
-  bool _isIcon = true;
-
   final String url = AppConfig().instance.baseUrl;
-
-  Timer? _debounce;
 
   @override
   Widget build(BuildContext context) {
@@ -34,43 +31,40 @@ class HomeSearchBar extends StatelessWidget {
               children: [
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  width: _isIcon ? Get.width * 0.78 : Get.width * 0.78,
-                  height: _isIcon ? Get.height * 0.05 : Get.height * 0.05,
-                  child: _isIcon
-                      ? _buildSearchIcon(controller)
-                      : _buildTextField(controller),
+                  width: Get.width * 0.78,
+                  height: Get.height * 0.05,
+                  child: _buildSearchIcon(controller, context),
                 ),
               ],
             )));
   }
 
-  Widget _buildTextField(HomeController controller) => TextField(
+  Widget _buildTextField(HomeController controller, BuildContext context) =>
+      TextField(
         controller: _editingController,
         focusNode: _focusNode,
         onChanged: (value) async {
-          if (_debounce?.isActive ?? false) _debounce?.cancel();
-          _debounce = Timer(const Duration(milliseconds: 500), () async {
-            controller.isLoading = true;
-            controller.update(['homeBody']);
-            controller.itemsData = await ScrappingService.getItems(word: value);
-            controller.isLoading = false;
-            controller.update(['homeBody', 'homeSearchBar']);
-          });
+          // if (_debounce?.isActive ?? false) _debounce?.cancel();
+          // _debounce = Timer(const Duration(milliseconds: 500), () async {
+          //   controller.isLoading = true;
+          //   controller.update(['homeBody']);
+          //   controller.itemsData = await ScrappingService.getItems(word: value);
+          //   controller.isLoading = false;
+          //   controller.update(['homeBody', 'homeSearchBar']);
+          // });
         },
         onSubmitted: (value) {
           ScrappingService().instance.isSearch = false;
           _focusNode.unfocus();
-          _isIcon = true;
           _editingController.clear();
-          controller.update(['homeSearchBar']);
         },
-        onTapOutside: (event) {
-          ScrappingService().instance.isSearch = false;
-          _focusNode.unfocus();
-          _isIcon = true;
-          _editingController.clear();
-          controller.update(['homeSearchBar']);
-        },
+        // onTapOutside: (event) {
+        //   ScrappingService().instance.isSearch = false;
+        //   _focusNode.unfocus();
+        //   _isIcon = true;
+        //   _editingController.clear();
+        //   controller.update(['homeSearchBar']);
+        // },
         cursorColor: _appTheme.theme.primaryColor,
         textAlign: TextAlign.center,
         decoration: InputDecoration(
@@ -97,25 +91,26 @@ class HomeSearchBar extends StatelessWidget {
         ),
       );
 
-  Widget _buildSearchIcon(HomeController controller) => Row(children: [
-        _buildPopupMenu(controller),
-        Container(
-            alignment: Alignment.centerLeft,
-            width: Get.width * 0.36,
-            child:
-                Text(controller.title, style: const TextStyle(fontSize: 20))),
-        SizedBox(width: Get.width * 0.05),
-        IconButton(
-          icon: const Icon(Icons.search),
-          onPressed: () {
-            _isIcon = false;
-            controller.update(['homeSearchBar']);
-            _focusNode.requestFocus();
-            ScrappingService().instance.isSearch = true;
-          },
-          iconSize: ((Get.width + Get.height) / 2) * 0.045,
-        ),
-      ]);
+  Widget _buildSearchIcon(HomeController controller, BuildContext context) {
+    return Row(children: [
+      _buildPopupMenu(controller),
+      Container(
+          alignment: Alignment.centerLeft,
+          width: Get.width * 0.36,
+          child: Text(controller.title, style: const TextStyle(fontSize: 20))),
+      SizedBox(width: Get.width * 0.05),
+      IconButton(
+        icon: const Icon(Icons.search),
+        onPressed: () {
+          Get.toNamed(AppRoutes.search);
+          controller.update(['homeSearchBar']);
+          _focusNode.requestFocus();
+          ScrappingService().instance.isSearch = true;
+        },
+        iconSize: ((Get.width + Get.height) / 2) * 0.045,
+      ),
+    ]);
+  }
 
   Widget _buildPopupMenu(HomeController controller,
       {Widget? secondary, Color? color, List<BoxShadow>? boxShadow}) {
