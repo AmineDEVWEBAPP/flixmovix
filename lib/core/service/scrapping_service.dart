@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart';
 import 'package:beautiful_soup_dart/beautiful_soup.dart';
 
@@ -298,8 +297,9 @@ class ScrappingService {
   }
 
 //* get Collections
-  static Future<Map<String, dynamic>> getCategorys(String? html,
-      {bool? hasError, WebResourceError? error}) async {
+  static Future<Map<String, dynamic>> getCategorys(
+    String? html,
+  ) async {
     logger('start scrapping');
     Map<String, dynamic> data = {};
     try {
@@ -309,13 +309,9 @@ class ScrappingService {
           'body': {'categorys': <dynamic>{}}
         });
       } else {
-        data.addAll({'connectionStatus': false});
-        return data;
-      }
-      if (hasError == true) {
         data.addAll({
-          'statusCode': error.hashCode,
-          'error': {'status': true, 'body': error?.description}
+          'connectionStatus': false,
+          'body': {'categorys': <dynamic>{}}
         });
         return data;
       }

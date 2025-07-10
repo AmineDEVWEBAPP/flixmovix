@@ -144,11 +144,11 @@ class SearchPage extends StatelessWidget {
 
   Future<void> _submitting(String value) async {
     Get.back();
-    _homeController.isLoading = true;
+    _homeController.homeIsLoading = true;
     _homeController.title = value;
     _homeController.update(['homeBody', 'homeSearchBar']);
     _homeController.itemsData = await ScrappingService.getItems(word: value);
-    _homeController.isLoading = false;
+    _homeController.homeIsLoading = false;
     _homeController.update(['homeBody', 'homeSearchBar']);
     value.isNotEmpty
         ? await SQFliteService.write(value, DbColumns.searchSuggestion)

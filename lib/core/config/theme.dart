@@ -172,7 +172,7 @@ class AppTheme {
 
       //< AppColors
       primaryColor: const Color.fromARGB(255, 70, 119, 204),
-      shadowColor: const Color.fromARGB(102, 251, 234, 234),
+      shadowColor: const Color.fromARGB(102, 140, 136, 136),
       //>
 
       // colorScheme

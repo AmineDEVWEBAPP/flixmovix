@@ -32,7 +32,10 @@ class MyApp extends StatelessWidget {
       initialRoute: AppRoutes.home,
       getPages: [
         GetPage(
-            name: AppRoutes.home, page: () => Home(), binding: HomeBindings()),
+          name: AppRoutes.home,
+          page: () => Home(),
+          binding: HomeBindings(),
+        ),
         GetPage(
             name: AppRoutes.details,
             page: () => Details(),

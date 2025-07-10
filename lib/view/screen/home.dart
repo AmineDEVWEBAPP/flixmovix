@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:webview_flutter_plus/webview_flutter_plus.dart';
 
 import '../../controller/home_controller.dart';
 import '../../core/config/routes.dart';
@@ -14,11 +15,13 @@ import '../widgets/shared/error_widget.dart';
 import '../widgets/home_widgets/home_search_bar.dart';
 import '../widgets/shared/item_card.dart';
 import '../widgets/shared/no_wifi_widget.dart';
+import '../../controller/web_view_controller.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
   final ThemeData _appTheme = AppTheme().instance.theme;
   final GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,26 +38,40 @@ class Home extends StatelessWidget {
         ),
         drawer: HomeDrawer(),
         backgroundColor: _appTheme.scaffoldBackgroundColor,
-        body: GetBuilder<HomeController>(
-            id: 'homeBody',
-            builder: (controller) => Stack(children: [
-                  _buildBody(controller),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: AdsService.showBannerAd(),
-                  )
-                ])));
+        body: Stack(
+          children: [
+            Container(
+                width: Get.width,
+                height: 300,
+                alignment: Alignment.center,
+                child: SingleChildScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: [
+                      SizedBox(
+                          height: 550,
+                          width: 1024,
+                          child: WebViewWidget(controller: webViewController)),
+                    ]))),
+            Container(
+                color: _appTheme.scaffoldBackgroundColor,
+                width: Get.width,
+                height: Get.height),
+            GetBuilder<HomeController>(
+                id: 'homeBody', builder: (controller) => _buildBody(controller))
+          ],
+        ));
   }
 
   Widget _buildBody(HomeController controller) {
-    if (controller.isLoading) {
+    if (controller.homeIsLoading) {
       return Center(child: CustomCircularProgress());
-    } else if (controller.itemsData['body']['items'].isEmpty) {
-      return const Center(child: Text('لا شئ لعرضه'));
     } else if (controller.itemsData['connectionStatus'] == false) {
       return NoWifiWidget(onTapRetry: () async {
         await controller.reTry();
       });
+    } else if (controller.itemsData['body']?['items'].isEmpty) {
+      return const Center(child: Text('لا شئ لعرضه'));
     } else if (controller.itemsData['error']['status'] == true) {
       return ErrorBodyWidget(
           statusCode: controller.itemsData['statusCode'],

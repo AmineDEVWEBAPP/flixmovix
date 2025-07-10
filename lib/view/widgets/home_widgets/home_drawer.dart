@@ -1,200 +1,185 @@
+import 'dart:io';
+
+import 'package:flixmovix/view/widgets/shared/custom_circular_progress.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/home_controller.dart';
 import '../../../core/config/assets.dart';
 import '../../../core/config/theme.dart';
 import '../../../core/service/scrapping_service.dart';
-import '../shared/custom_circular_progress.dart';
-import '../shared/error_widget.dart';
-import '../shared/no_wifi_widget.dart';
-import 'share_button.dart';
-import 'switch_theme_mode.dart';
+import 'bottom_sheet_body.dart';
 
 // ignore: must_be_immutable
 class HomeDrawer extends StatelessWidget {
   HomeDrawer({super.key});
 
-  bool isLoading = false;
+  final ThemeData _appTheme = AppTheme().instance.theme;
 
-  InAppWebViewController? _webViewController;
+  late bool _switchThemeValue = true;
 
   final HomeController _homeController = Get.find<HomeController>();
 
-  final ThemeData _appTheme = AppTheme().instance.theme;
-
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<HomeController>(
-        dispose: (state) {
-          isLoading = false;
-          _webViewController = null;
-          _webViewController?.dispose();
-        },
-        builder: (controller) => Container(
-              width: Get.width * 0.7,
-              height: Get.height,
-              decoration: BoxDecoration(
-                  color: _appTheme.colorScheme.secondary,
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      bottomLeft: Radius.circular(15))),
-              child: SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  child: SizedBox(
-                    height: Get.height * 0.99,
-                    child: Column(children: [
-                      _buildHeader(controller),
-                      SizedBox(height: Get.height * 0.1),
-                      const SwitchThemeMode(),
-                      ShareButton(),
-                      GetBuilder<HomeController>(
-                        id: 'drawerBody',
-                        builder: (bodyController) => isLoading
-                            ? _loadingWidget()
-                            : _buildBody(bodyController),
-                      ),
-                      const Spacer(),
-                      const Text.rich(TextSpan(children: [
-                        TextSpan(text: 'Created by '),
-                        TextSpan(
-                            text: 'AmineDEVWEBAPP',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontStyle: FontStyle.italic))
-                      ])),
-                    ]),
-                  )),
-            ));
+    return Container(
+      width: Get.width * 0.7,
+      height: Get.height,
+      decoration: BoxDecoration(
+          color: _appTheme.colorScheme.secondary,
+          borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(15), bottomLeft: Radius.circular(15))),
+      child: SingleChildScrollView(
+        child: Column(children: [
+          SizedBox(height: Get.height * 0.03),
+          _buildHeader(_homeController),
+          Padding(
+              padding: EdgeInsets.symmetric(horizontal: Get.width * 0.03),
+              child: Divider()),
+          _buildBody(_homeController),
+        ]),
+      ),
+    );
   }
 
-  Widget _buildHeader(HomeController controller) => SizedBox(
-        width: Get.width,
-        height: Get.height * 0.1,
-        child: Stack(
+  Widget _buildHeader(HomeController controller) => Container(
+      padding: EdgeInsets.symmetric(horizontal: Get.width * 0.03),
+      height: Get.height * 0.1,
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Image.asset(AppAsset().images.logo),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildWebView(controller),
-            Container(
-                alignment: Alignment.center,
-                width: Get.width,
-                height: Get.height * 0.1,
-                padding: EdgeInsets.only(top: Get.height * 0.01),
-                decoration: BoxDecoration(
-                    color: _appTheme.colorScheme.secondary,
-                    borderRadius:
-                        const BorderRadius.only(topLeft: Radius.circular(15))),
-                child: Image.asset(AppAsset().images.logo))
+            Text('Flixmovix',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            Text('شاهد افلامك المفضلة', style: TextStyle()),
           ],
+        )
+      ]));
+
+  Widget _buildBody(HomeController controller) => Padding(
+        padding: EdgeInsets.symmetric(horizontal: Get.width * 0.01),
+        child: SizedBox(
+          height: Get.height * 0.85,
+          child: Column(children: [
+            _buildCategorysList(),
+            _buildButton(
+                AppTheme().instance.themeMode == ThemeMode.dark
+                    ? 'تفعيل الوضع النهاري'
+                    : 'تفعيل الوضع الليلي',
+                suffix: GetBuilder<HomeController>(
+                    id: 'switchTheme',
+                    initState: (state) {
+                      _switchThemeValue =
+                          AppTheme().instance.themeMode == ThemeMode.light;
+                    },
+                    builder: (controller) => Switch(
+                          value: _switchThemeValue,
+                          onChanged: (value) async {
+                            await Get.defaultDialog(
+                              backgroundColor:
+                                  _appTheme.scaffoldBackgroundColor,
+                              title:
+                                  'الانتقال الى الوضع ${_switchThemeValue ? 'الليلي' : 'النهاري'}',
+                              middleText:
+                                  'المرجوا اعادة تشغيل التطبيق للانتقال الى الوضع ${_switchThemeValue ? 'الليلي' : 'النهاري'}',
+                              textConfirm: 'تغيير',
+                              textCancel: 'الغاء',
+                              onCancel: () {
+                                Get.back();
+                              },
+                              onConfirm: () async {
+                                _switchThemeValue = !_switchThemeValue;
+                                controller.update(['switchTheme']);
+                                await AppTheme().instance.changeThemeMode(
+                                    _switchThemeValue
+                                        ? ThemeMode.light
+                                        : ThemeMode.dark);
+                                exit(1);
+                              },
+                            );
+                          },
+                        ))),
+            _buildButton('مشاركة التطبيق', suffix: Icon(Icons.share),
+                onTap: () async {
+              await Get.bottomSheet(BottomSheetBody());
+            }),
+            _buildButton('تدوين ملاحضة',
+                suffix: Icon(Icons.note), onTap: () {}),
+            _buildButton('حول', suffix: Icon(Icons.info)),
+            SizedBox(height: Get.height * 0.02),
+            GetBuilder<HomeController>(
+                id: 'drawerLoading',
+                initState: (state) async {
+                  await _homeController.reloadCategorys();
+                },
+                builder: (controller) => controller.drawerIsLoading
+                    ? CustomCircularProgress(color: _appTheme.primaryColor)
+                    : SizedBox()),
+            Spacer(),
+            const Text.rich(TextSpan(children: [
+              TextSpan(text: 'Created by '),
+              TextSpan(
+                  text: 'AmineDEVWEBAPP',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w700, fontStyle: FontStyle.italic))
+            ])),
+          ]),
         ),
       );
 
-  Widget _buildBody(HomeController controller) {
-    return _homeController.drawerCategorysData?['connectionStatus'] == false
-        ? Expanded(
-            child: NoWifiWidget(
-              onTapRetry: () async {
-                isLoading = true;
-                controller.update(['drawerBody']);
-                await _webViewController?.reload();
-                isLoading = false;
-                controller.update(['drawerBody']);
-              },
-            ),
-          )
-        : _homeController.drawerCategorysData?['error']?['status'] == true
-            ? Expanded(
-                child: ErrorBodyWidget(
-                onTapRetry: () async {
-                  isLoading = true;
-                  controller.update(['drawerBody']);
-                  await _webViewController?.reload();
-                  isLoading = false;
-                  controller.update(['drawerBody']);
-                },
-                statusCode: _homeController.drawerCategorysData?['statusCode'],
-              ))
-            : Column(children: [
-                ...List.generate(
-                    _homeController.drawerCategorysData?['body']?['categorys']
-                            .length ??
-                        0,
-                    (i) => _buildButtonList(
-                        _homeController.drawerCategorysData?['body']
-                                ['categorys']
-                            .elementAt(i),
-                        controller)),
-              ]);
-  }
-
-  Widget _buildButtonList(
-          Map<String, dynamic> items, HomeController homeController) =>
+  Widget _buildButton(String text, {void Function()? onTap, Widget? suffix}) =>
       InkWell(
-        onTap: () async {
-          Get.back();
-          ScrappingService().instance.baseUrl = items['href'];
-          await homeController.reTry();
-        },
+        onTap: onTap,
         child: Container(
-          width: Get.width,
+          height: Get.height * 0.05,
           padding: EdgeInsets.only(right: Get.width * 0.05),
           margin: EdgeInsets.symmetric(vertical: Get.height * 0.005),
           decoration: BoxDecoration(
               color: _appTheme.primaryColor,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: _appTheme.shadowColor)),
+              border: Border.all(color: _appTheme.shadowColor),
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme().instance.theme.shadowColor,
+                  blurRadius: 2,
+                  spreadRadius: 2,
+                )
+              ]),
           child: Padding(
               padding: EdgeInsets.symmetric(vertical: Get.height * 0.01),
-              child: Text(items['name'], style: const TextStyle(fontSize: 20))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(text, style: const TextStyle(fontSize: 17)),
+                  Row(children: [
+                    suffix ?? SizedBox(),
+                    SizedBox(width: Get.width * 0.02)
+                  ]),
+                ],
+              )),
         ),
       );
 
-  Widget _buildWebView(HomeController homeController) => InAppWebView(
-        initialUrlRequest:
-            URLRequest(url: WebUri(ScrappingService().instance.baseUrl)),
-        initialSettings: InAppWebViewSettings(
-          preferredContentMode: UserPreferredContentMode.DESKTOP,
-          userAgent:
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-          javaScriptEnabled: true,
-          useOnLoadResource: true,
-          loadsImagesAutomatically: false,
-        ),
-        onWebViewCreated: (controller) async {
-          _webViewController = controller;
-          await controller.evaluateJavascript(source: """
-  document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=1280,height=280 initial-scale=1.0');
-""");
-        },
-        onLoadStart: (controller, url) {
-          if (_homeController.drawerCategorysData == null) {
-            isLoading = true;
-            homeController.update(['drawerBody']);
-          }
-        },
-        onLoadStop: (controller, url) async {
-          if (_homeController.drawerCategorysData == null) {
-            String? html = await controller.getHtml();
-            _homeController.drawerCategorysData =
-                await ScrappingService.getCategorys(html);
-            isLoading = false;
-            homeController.update(['drawerBody']);
-          }
-        },
-        onReceivedError: (controller, request, error) async {
-          String? html = await controller.getHtml();
-          _homeController.drawerCategorysData =
-              await ScrappingService.getCategorys(html,
-                  hasError: true, error: error);
-          isLoading = false;
-          homeController.update(['drawerBody']);
-        },
-      );
-
-  Widget _loadingWidget() => Expanded(
-        child: Container(
-          alignment: Alignment.center,
-          child: CustomCircularProgress(color: _appTheme.primaryColor),
-        ),
-      );
+  Widget _buildCategorysList() {
+    return GetBuilder<HomeController>(
+        id: 'drawerCaregorys',
+        builder: (controller) => Column(children: [
+              ...List.generate(
+                  _homeController
+                          .drawerCategorysData['body']?['categorys'].length ??
+                      0,
+                  (i) => _buildButton(
+                          _homeController.drawerCategorysData['body']
+                                  ['categorys']
+                              .elementAt(i)['name'],
+                          suffix: Icon(Icons.category), onTap: () async {
+                        Get.back();
+                        ScrappingService().instance.baseUrl = _homeController
+                            .drawerCategorysData['body']['categorys']
+                            .elementAt(i)['href'];
+                        await _homeController.reTry();
+                      })),
+            ]));
+  }
 }

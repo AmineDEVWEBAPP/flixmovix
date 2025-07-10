@@ -78,7 +78,7 @@ class HomeSearchBar extends StatelessWidget {
                     PopupMenuItem(
                       onTap: () async {
                         controller.title = 'الكل';
-                        controller.isLoading = true;
+                        controller.homeIsLoading = true;
                         controller.update(['homeBody', 'homeSearchBar']);
                         controller.pageNum = 1;
                         ScrappingService().instance.getByCollection = false;
@@ -88,7 +88,7 @@ class HomeSearchBar extends StatelessWidget {
                         controller.itemsData =
                             await ScrappingService.getItems();
 
-                        controller.isLoading = false;
+                        controller.homeIsLoading = false;
                         controller.update(['homeBody', 'homeSearchBar']);
                       },
                       child: const Column(children: [Text('الكل'), Divider()]),
@@ -139,14 +139,14 @@ class HomeSearchBar extends StatelessWidget {
       HomeController controller, int index) async {
     controller.title =
         controller.itemsData['body']['collections'].elementAt(index)['name'];
-    controller.isLoading = true;
+    controller.homeIsLoading = true;
     controller.update(['homeBody', 'homeSearchBar']);
     controller.pageNum = 1;
     ScrappingService().instance.getByCollection = true;
     ScrappingService().instance.baseUrl =
         controller.itemsData['body']['collections'].elementAt(index)['href'];
     controller.itemsData = await ScrappingService.getItems();
-    controller.isLoading = false;
+    controller.homeIsLoading = false;
     controller.update(['homeBody', 'homeSearchBar']);
   }
 }

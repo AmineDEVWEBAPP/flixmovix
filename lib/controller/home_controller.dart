@@ -1,27 +1,44 @@
+import 'package:flixmovix/controller/web_view_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../core/service/firebase_service.dart';
 import '../core/service/scrapping_service.dart';
+import '../core/utils/methodes.dart';
 import '../view/widgets/shared/spleach_screen.dart';
 
 class HomeController extends GetxController {
   int pageNum = 1;
+
   Map<String, dynamic> itemsData = {
     'connectionStatus': true,
     'body': {'items': []}
   };
-  bool isLoading = false;
+  bool homeIsLoading = false;
+
   String title = 'الكل';
-  Map<String, dynamic>? drawerCategorysData;
+
   String? shareLink;
 
+  Map<String, dynamic> drawerCategorysData = {};
+
+  bool drawerIsLoading = false;
+
   Future reTry() async {
-    isLoading = true;
+    homeIsLoading = true;
     update(['homeBody', 'homeSearchBar']);
     itemsData = await ScrappingService.getItems();
-    isLoading = false;
+    homeIsLoading = false;
     update(['homeBody', 'homeSearchBar']);
+  }
+
+  Future<void> reloadCategorys() async {
+    if (drawerCategorysData.isEmpty ||
+        drawerCategorysData['connectionStatus'] == false ||
+        drawerCategorysData['body']?['categorys'].isEmpty) {
+      logger('WebView reload');
+      await webViewController.reload();
+    }
   }
 
   @override

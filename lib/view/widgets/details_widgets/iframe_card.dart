@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_plus/webview_flutter_plus.dart';
 
 import '../../../controller/details_controller.dart';
 import '../../../core/config/theme.dart';
@@ -24,7 +24,7 @@ class _IframeCardState extends State<IframeCard> {
 
   final DetailsController _detailsController = Get.find<DetailsController>();
 
-  late WebViewController _webViewController;
+  late WebViewControllerPlus _webViewController;
 
   final Stream<int> numberStream =
       Stream.periodic(const Duration(seconds: 1), (x) => x);
@@ -43,7 +43,7 @@ class _IframeCardState extends State<IframeCard> {
         );
       }
     });
-    _webViewController = WebViewController()
+    _webViewController = WebViewControllerPlus()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(
         onPageFinished: (url) {
