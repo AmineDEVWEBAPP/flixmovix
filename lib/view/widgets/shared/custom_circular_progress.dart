@@ -5,7 +5,8 @@ import 'package:get/get.dart';
 import '../../../core/config/theme.dart';
 
 class CustomCircularProgress extends StatelessWidget {
-  CustomCircularProgress({super.key, this.size, this.color});
+  CustomCircularProgress(
+      {super.key, this.size, this.color, this.lineWidth = 7.0});
 
   final ThemeData _appTheme = AppTheme().instance.theme;
 
@@ -13,9 +14,12 @@ class CustomCircularProgress extends StatelessWidget {
 
   final Color? color;
 
+  final double lineWidth;
+
   @override
   Widget build(BuildContext context) {
     return SpinKitDualRing(
+      lineWidth: lineWidth,
       color: color ?? _appTheme.colorScheme.secondary,
       size: size ?? ((Get.width + Get.height) / 2) * 0.06,
     );

@@ -6,9 +6,10 @@ import 'package:get/get.dart';
 
 import '../../../controller/home_controller.dart';
 import '../../../core/config/assets.dart';
+import '../../../core/config/routes.dart';
 import '../../../core/config/theme.dart';
 import '../../../core/service/scrapping_service.dart';
-import 'bottom_sheet_body.dart';
+import '../../widgets/home_widgets/bottom_sheet_body.dart';
 
 // ignore: must_be_immutable
 class HomeDrawer extends StatelessWidget {
@@ -104,8 +105,10 @@ class HomeDrawer extends StatelessWidget {
                 onTap: () async {
               await Get.bottomSheet(BottomSheetBody());
             }),
-            _buildButton('تدوين ملاحضة',
-                suffix: Icon(Icons.note), onTap: () {}),
+            _buildButton('تدوين ملاحضة', suffix: Icon(Icons.note), onTap: () {
+              Get.back();
+              Get.toNamed(AppRoutes.note);
+            }),
             _buildButton('حول', suffix: Icon(Icons.info)),
             SizedBox(height: Get.height * 0.02),
             GetBuilder<HomeController>(

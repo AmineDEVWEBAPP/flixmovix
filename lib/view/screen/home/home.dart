@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter_plus/webview_flutter_plus.dart';
 
-import '../../controller/home_controller.dart';
-import '../../core/config/routes.dart';
-import '../../core/config/theme.dart';
-import '../../core/service/ads_service.dart';
-import '../../core/service/scrapping_service.dart';
-import '../../data/models/item_model.dart';
-import '../widgets/home_widgets/grid_view_loading.dart';
-import '../widgets/home_widgets/home_drawer.dart';
-import '../widgets/shared/custom_circular_progress.dart';
-import '../widgets/shared/error_widget.dart';
-import '../widgets/home_widgets/home_search_bar.dart';
-import '../widgets/shared/item_card.dart';
-import '../widgets/shared/no_wifi_widget.dart';
-import '../../controller/web_view_controller.dart';
+import '../../../controller/home_controller.dart';
+import '../../../core/config/routes.dart';
+import '../../../core/config/theme.dart';
+import '../../../core/service/ads_service.dart';
+import '../../../core/service/scrapping_service.dart';
+import '../../../data/models/item_model.dart';
+import '../../widgets/home_widgets/grid_view_loading.dart';
+import 'home_drawer.dart';
+import '../../widgets/shared/custom_circular_progress.dart';
+import '../../widgets/shared/error_widget.dart';
+import '../../widgets/home_widgets/home_search_bar.dart';
+import '../../widgets/shared/item_card.dart';
+import '../../widgets/shared/no_wifi_widget.dart';
+import '../../../controller/web_view_controller.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});

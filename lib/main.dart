@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 
 import 'core/bindings/details_bindings.dart';
 import 'core/bindings/home_bindings.dart';
+import 'core/bindings/note_bindings.dart';
 import 'core/config/routes.dart';
 import 'core/config/theme.dart';
 import 'core/utils/methodes.dart';
 import 'view/screen/details/details.dart';
-import 'view/screen/home.dart';
+import 'view/screen/home/home.dart';
+import 'view/screen/note.dart';
 import 'view/screen/search.dart';
 
 void main() async {
@@ -41,6 +43,8 @@ class MyApp extends StatelessWidget {
             page: () => Details(),
             binding: DetailsBindings()),
         GetPage(name: AppRoutes.search, page: () => SearchPage()),
+        GetPage(
+            name: AppRoutes.note, page: () => Note(), binding: NoteBindings()),
       ],
     );
   }

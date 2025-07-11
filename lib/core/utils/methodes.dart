@@ -10,7 +10,7 @@ import '../service/sqflite_service.dart';
 
 logger(String? message) {
   // ignore: avoid_print
-  print('Logger : $message');
+  print('\x1B[34m [logger] → $message\x1B[0m');
 }
 
 Future initServices() async {

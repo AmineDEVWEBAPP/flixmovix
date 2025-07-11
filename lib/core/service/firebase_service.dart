@@ -22,6 +22,30 @@ class FirebaseService {
     }
   }
 
+  static Future<Map<String, dynamic>> writeNote(String content) async {
+    Map<String, dynamic> data = {};
+    if (await checkConnectionStatus()) {
+      data.addAll({'connectionStatus': true});
+      CollectionReference appData =
+          FirebaseFirestore.instance.collection('note');
+      await appData.add({'content': content}).then((value) {
+        data.addAll({
+          'status': true,
+          'error': {'errorStatus': false}
+        });
+      }).catchError((error) {
+        data.addAll({
+          'status': false,
+          'error': {'errorStatus': true, 'message': error}
+        });
+      });
+    } else {
+      data.addAll({'connectionStatus': false, 'status': false});
+    }
+    logger('FirebaseFirestore setNote status: ${data['status']}');
+    return data;
+  }
+
   Future<List<Map<String, dynamic>>> getShareLinks() async {
     List<Map<String, dynamic>> data = [];
     CollectionReference storeLinks =
@@ -30,12 +54,14 @@ class FirebaseService {
     for (QueryDocumentSnapshot<Object?> doc in querySnapshot.docs) {
       data.add(doc.data() as Map<String, dynamic>);
     }
+    logger('FirebaseFirestore get StoreLinks : $data');
     return data;
   }
 
   static Future<String> getShareableLink() async {
     List<Map<String, dynamic>> links = await _instance.getShareLinks();
     String link = links.where((el) => el['shareable']).toList()[0]['link'];
+    logger('FirebaseFirestore get shareable Link : $link');
     return link;
   }
 
@@ -80,6 +106,7 @@ class FirebaseService {
         Map data = value.data() as Map;
         showAdsCon = data['showAds'];
       });
+      logger('FirebaseFirestore get showAds : $showAdsCon');
       return showAdsCon;
     }
     return true;
