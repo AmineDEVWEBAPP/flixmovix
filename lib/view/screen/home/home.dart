@@ -108,7 +108,7 @@ class Home extends StatelessWidget {
               return ItemCard(
                 onTap: () async {
                   await AdsService.showAd(AdsService.interstitialAdPlacementId);
-                  Get.toNamed(AppRoutes.details, arguments: {
+                  Get.toNamed(AppRoutes.details.name, arguments: {
                     'href': controller.itemsData['body']['items']
                         .elementAt(i)['href'],
                     'title': controller.itemsData['body']['items']

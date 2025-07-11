@@ -38,7 +38,7 @@ class WatchFilm extends StatelessWidget {
                       await AdsService.showAd(AdsService.rewardedAdPlacementId);
                       context.mounted
                           ? Navigator.of(context).pushReplacementNamed(
-                              AppRoutes.details,
+                              AppRoutes.details.name,
                               arguments: {
                                   'href':
                                       model.similarOffers?.elementAt(i)['href'],

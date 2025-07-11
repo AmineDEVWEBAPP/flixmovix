@@ -107,7 +107,7 @@ class HomeDrawer extends StatelessWidget {
             }),
             _buildButton('تدوين ملاحضة', suffix: Icon(Icons.note), onTap: () {
               Get.back();
-              Get.toNamed(AppRoutes.note);
+              Get.toNamed(AppRoutes.note.name);
             }),
             _buildButton('حول', suffix: Icon(Icons.info)),
             SizedBox(height: Get.height * 0.02),

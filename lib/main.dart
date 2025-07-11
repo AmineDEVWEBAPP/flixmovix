@@ -2,16 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 
-import 'core/bindings/details_bindings.dart';
-import 'core/bindings/home_bindings.dart';
-import 'core/bindings/note_bindings.dart';
 import 'core/config/routes.dart';
 import 'core/config/theme.dart';
 import 'core/utils/methodes.dart';
-import 'view/screen/details/details.dart';
-import 'view/screen/home/home.dart';
-import 'view/screen/note.dart';
-import 'view/screen/search.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,20 +24,12 @@ class MyApp extends StatelessWidget {
       themeMode: AppTheme().instance.themeMode,
       theme: AppTheme().instance.theme,
       darkTheme: AppTheme().instance.darkTheme,
-      initialRoute: AppRoutes.home,
+      initialRoute: AppRoutes.home.name,
       getPages: [
-        GetPage(
-          name: AppRoutes.home,
-          page: () => Home(),
-          binding: HomeBindings(),
-        ),
-        GetPage(
-            name: AppRoutes.details,
-            page: () => Details(),
-            binding: DetailsBindings()),
-        GetPage(name: AppRoutes.search, page: () => SearchPage()),
-        GetPage(
-            name: AppRoutes.note, page: () => Note(), binding: NoteBindings()),
+        AppRoutes.home,
+        AppRoutes.details,
+        AppRoutes.search,
+        AppRoutes.note,
       ],
     );
   }

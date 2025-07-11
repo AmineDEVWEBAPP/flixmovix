@@ -48,7 +48,7 @@ class HomeSearchBar extends StatelessWidget {
       IconButton(
         icon: const Icon(Icons.search),
         onPressed: () {
-          Get.toNamed(AppRoutes.search);
+          Get.toNamed(AppRoutes.search.name);
           controller.update(['homeSearchBar']);
           ScrappingService().instance.isSearch = true;
         },
