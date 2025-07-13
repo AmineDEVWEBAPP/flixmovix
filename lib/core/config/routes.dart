@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../../view/screen/about_us.dart';
 import '../../view/screen/details/details.dart';
 import '../../view/screen/home/home.dart';
 import '../../view/screen/note.dart';
@@ -29,5 +30,10 @@ class AppRoutes {
     name: '/note',
     page: () => Note(),
     binding: NoteBindings(),
+  );
+
+  static GetPage aboutUs = GetPage(
+    name: '/aboutUs',
+    page: () => AboutUs(),
   );
 }

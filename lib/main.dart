@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
         AppRoutes.details,
         AppRoutes.search,
         AppRoutes.note,
+        AppRoutes.aboutUs,
       ],
     );
   }

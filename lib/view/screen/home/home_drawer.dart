@@ -109,7 +109,9 @@ class HomeDrawer extends StatelessWidget {
               Get.back();
               Get.toNamed(AppRoutes.note.name);
             }),
-            _buildButton('حول', suffix: Icon(Icons.info)),
+            _buildButton('حول', suffix: Icon(Icons.info), onTap: () {
+              Get.toNamed(AppRoutes.aboutUs.name);
+            }),
             SizedBox(height: Get.height * 0.02),
             GetBuilder<HomeController>(
                 id: 'drawerLoading',
